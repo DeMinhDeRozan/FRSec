@@ -1,0 +1,20 @@
+title: Fun Reminder - Account Banned for Prompt Injection
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000002
+status: experimental
+description: An account reached the injection strike limit and was banned (temporary or permanent). The user repeatedly sent prompts that look like injection or jailbreak attempts.
+author: Quang Minh Le
+date: 2026-11-10
+tags:
+  - attack.initial_access
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: user_banned
+    funreminder.reason: injection
+  condition: selection
+falsepositives:
+  - Security-minded users testing the app's limits
+level: high

@@ -1,0 +1,18 @@
+title: Fun Reminder - Account Banned for Off-Topic Use
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000010
+status: experimental
+description: An account hit the off-topic strike limit (messages that are not reminders) and was banned. Mostly normal users chatting with the bot, so this is informational noise unless it spikes.
+author: Quang Minh Le
+date: 2026-11-10
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: user_banned
+    funreminder.reason: offtopic
+  condition: selection
+falsepositives:
+  - Legitimate users who treat the app as a chatbot
+level: low
