@@ -2,8 +2,8 @@
 names that MUST fire on it. Every other rule must stay silent (no false alerts).
 
 The matcher below is a small Sigma subset (field: value | list, AND across fields,
-condition: selection). Rules outside that subset fail test_rules_use_supported_subset,
-so a new feature can't silently skip testing."""
+condition `selection` or `selection and not <filter>`). Rules outside that subset fail
+test_rules_use_supported_subset, so a new feature can't silently skip testing."""
 import json
 from pathlib import Path
 
@@ -27,9 +27,9 @@ def flatten(d, prefix=""):
     return out
 
 
-def matches(rule, event):
-    flat = flatten({k: v for k, v in event.items() if k != "_test"})
-    for field, want in rule["detection"]["selection"].items():
+def block_matches(block, flat):
+    """All fields of one detection block match (AND); a list value means any of them (OR)."""
+    for field, want in block.items():
         wants = want if isinstance(want, list) else [want]
         got = flat.get(field)
         if got is None or str(got).lower() not in {str(w).lower() for w in wants}:
@@ -37,12 +37,33 @@ def matches(rule, event):
     return True
 
 
+def filter_name(condition):
+    """'selection' -> None, 'selection and not filter_x' -> 'filter_x'."""
+    parts = condition.split()
+    if parts == ["selection"]:
+        return None
+    if len(parts) == 4 and parts[:3] == ["selection", "and", "not"]:
+        return parts[3]
+    raise ValueError(f"unsupported condition: {condition}")
+
+
+def matches(rule, event):
+    flat = flatten({k: v for k, v in event.items() if k != "_test"})
+    det = rule["detection"]
+    if not block_matches(det["selection"], flat):
+        return False
+    flt = filter_name(det["condition"])
+    return not (flt and block_matches(det[flt], flat))
+
+
 def test_rules_use_supported_subset():
     for name, r in RULES.items():
         det = r["detection"]
-        assert set(det) == {"selection", "condition"}, f"{name}: only selection+condition supported"
-        assert det["condition"] == "selection", name
-        assert all("|" not in f for f in det["selection"]), f"{name}: field modifiers not supported by the test matcher"
+        flt = filter_name(det["condition"])  # raises on anything else
+        assert set(det) == {"selection", "condition"} | ({flt} if flt else set()), \
+            f"{name}: only selection (+ one filter) + condition supported"
+        for block in [det["selection"]] + ([det[flt]] if flt else []):
+            assert all("|" not in f for f in block), f"{name}: field modifiers not supported by the test matcher"
 
 
 def test_rule_metadata():

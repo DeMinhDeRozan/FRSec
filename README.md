@@ -22,8 +22,8 @@ rules/*.yml -> CI (lint, tests, throwaway ES) -> deploy_rules.py -> Detection En
 
 | Rule | Fires on | Level |
 |---|---|---|
-| fr_prompt_injection_flagged | prompt flagged by regex layer or the LLM | medium |
-| fr_user_banned_injection | account banned after injection strikes | high |
+| fr_prompt_injection_flagged | prompt flagged by the regex layer, the pre-Bedrock gate or the LLM; one alert per prompt (duplicate lines are filtered) | medium |
+| fr_user_banned_injection | account banned after injection strikes (any detection layer counts as a strike) | high |
 | fr_user_banned_offtopic | account banned for off-topic messages | low |
 | fr_ip_banned | guest IP banned (guest-ID rotation) | high |
 | fr_banned_access_attempt | banned identity keeps sending | medium |
@@ -58,7 +58,7 @@ python tools/deploy_rules.py --dry-run
 
 CI runs lint, pytest, then every converted Lucene query against a throwaway Elasticsearch container and compares the hits with the expectations.
 
-The test matcher supports a small Sigma subset: `field: value`, lists, AND across fields, `condition: selection`. Anything else fails `test_rules_use_supported_subset` instead of silently skipping.
+The test matcher supports a small Sigma subset: `field: value`, lists, AND across fields, `condition: selection` or `selection and not <filter>`. Anything else fails `test_rules_use_supported_subset` instead of silently skipping.
 
 ## Deploy
 
