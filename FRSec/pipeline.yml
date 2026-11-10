@@ -1,8 +1,0 @@
-# pySigma processing pipeline for Fun Reminder logs (fields are already ECS, so no field mapping needed).
-name: funreminder
-priority: 20
-transformations:
-  - id: index
-    type: set_state
-    key: index
-    val: ["funreminder-events-*"]
