@@ -1,0 +1,23 @@
+title: Fun Reminder - Per-User or Per-IP Daily Cap Reached
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000006
+status: experimental
+description: A single account or guest IP used up its daily request budget, a sign of scripted use or token abuse.
+author: Quang Minh Le
+date: 2026-11-10
+tags:
+  - attack.impact
+  - attack.t1496
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: token_limit_hit
+    funreminder.scope:
+      - user_daily
+      - guest_ip_daily
+  condition: selection
+falsepositives:
+  - Heavy but legitimate users
+level: medium

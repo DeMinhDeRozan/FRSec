@@ -1,0 +1,5 @@
+pysigma>=1.0
+pysigma-backend-elasticsearch>=2.0
+sigma-cli>=2.0
+pytest>=8
+pyyaml

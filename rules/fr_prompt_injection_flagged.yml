@@ -1,0 +1,26 @@
+title: Fun Reminder - Prompt Injection Attempt Flagged
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000001
+status: experimental
+description: >
+  A user prompt was flagged as a prompt injection or jailbreak by the regex layers
+  or by the LLM itself. Prompt text is never logged; correlate with the DynamoDB
+  PROMPT_LOG row through funreminder.prompt_hash. The same prompt can appear twice
+  (stage=log and stage=flag_update), so dedupe on funreminder.prompt_hash.
+  Related framework: MITRE ATLAS AML.T0051 (LLM Prompt Injection), verify the ID on atlas.mitre.org.
+references:
+  - https://atlas.mitre.org/
+author: Quang Minh Le
+date: 2026-11-10
+tags:
+  - attack.initial_access
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: prompt_flagged
+  condition: selection
+falsepositives:
+  - Users who paste text that happens to look like an instruction override
+level: medium

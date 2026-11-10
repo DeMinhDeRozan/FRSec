@@ -1,0 +1,17 @@
+title: Fun Reminder - Reminder Missed and Caught by Sweeper
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000008
+status: experimental
+description: The browser did not claim a reminder in time, so the sweeper had to notify the admin. Operational rule, no MITRE mapping.
+author: Quang Minh Le
+date: 2026-11-10
+logsource:
+  product: funreminder
+  service: operations
+detection:
+  selection:
+    event.dataset: funreminder.operations
+    event.action: reminder_late
+  condition: selection
+falsepositives:
+  - Users who closed the tab before the reminder was due
+level: low

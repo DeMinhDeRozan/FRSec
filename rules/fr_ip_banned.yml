@@ -1,0 +1,21 @@
+title: Fun Reminder - Guest IP Banned
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000003
+status: experimental
+description: >
+  A guest IP was banned after repeated malicious messages, typically because the
+  attacker rotates guest IDs to evade account bans.
+author: Quang Minh Le
+date: 2026-11-10
+tags:
+  - attack.defense_evasion
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: ip_banned
+  condition: selection
+falsepositives:
+  - Shared NAT or campus networks where several users trigger strikes
+level: high

@@ -1,0 +1,23 @@
+title: Fun Reminder - Global Daily LLM Token Cap Reached
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000005
+status: experimental
+description: >
+  The app-wide daily token cap was hit, so every user is refused until tomorrow.
+  Possible LLM abuse (cost exhaustion) or a genuine traffic spike.
+author: Quang Minh Le
+date: 2026-11-10
+tags:
+  - attack.impact
+  - attack.t1496
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: token_limit_hit
+    funreminder.scope: global_daily
+  condition: selection
+falsepositives:
+  - Legitimate growth in usage
+level: high

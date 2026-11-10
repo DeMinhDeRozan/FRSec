@@ -1,0 +1,19 @@
+title: Fun Reminder - Authentication Failed
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000007
+status: experimental
+description: A request carried an expired or invalid login token (HTTP 401).
+author: Quang Minh Le
+date: 2026-11-10
+tags:
+  - attack.credential_access
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: auth_failed
+  condition: selection
+falsepositives:
+  - Users whose session simply expired
+level: low
