@@ -1,0 +1,29 @@
+title: Fun Reminder - Account Banned for API Abuse
+id: 6f0d5d2a-1b7e-4c11-9a1a-0e5a1f000011
+status: experimental
+description: >
+  An account was banned for abusing the API rather than for what it wrote:
+  rate_abuse = it kept going over the per-minute request cap (one strike per
+  flooded minute, 3 strikes = temporary ban); ban_evasion = it kept sending chat
+  messages while already banned, which the web app no longer allows, so the
+  requests came from a script or a modified client (ban restarted, or made
+  permanent after 20 attempts in a day).
+author: Quang Minh Le
+date: 2026-11-10
+tags:
+  - attack.impact
+logsource:
+  product: funreminder
+  service: security
+detection:
+  selection:
+    event.dataset: funreminder.security
+    event.action: user_banned
+    funreminder.reason:
+      - rate_abuse
+      - ban_evasion
+  condition: selection
+falsepositives:
+  - A user double-clicking or a client retry loop after a network error (rate_abuse)
+  - An old browser tab without the input lock sending while banned (ban_evasion)
+level: high

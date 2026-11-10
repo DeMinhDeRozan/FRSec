@@ -18,12 +18,13 @@ rules/*.yml -> CI (lint, tests, throwaway ES) -> deploy_rules.py -> Detection En
 - A small script on an Azure VM pulls the logs from CloudWatch into Elasticsearch. Nothing connects into the VM; Elasticsearch and Kibana listen on 127.0.0.1 only.
 - The VM runs about 8 hours a day, so rules fire when it is up. No real-time alerting.
 
-## Rules (10)
+## Rules (11)
 
 | Rule | Fires on | Level |
 |---|---|---|
 | fr_prompt_injection_flagged | prompt flagged by the regex layer, the pre-Bedrock gate or the LLM; one alert per prompt (duplicate lines are filtered) | medium |
 | fr_user_banned_injection | account banned after injection strikes (any detection layer counts as a strike) | high |
+| fr_user_banned_api_abuse | account banned for flooding the API (rate_abuse) or sending while banned (ban_evasion) | high |
 | fr_user_banned_offtopic | account banned for off-topic messages | low |
 | fr_ip_banned | guest IP banned (guest-ID rotation) | high |
 | fr_banned_access_attempt | banned identity keeps sending | medium |
